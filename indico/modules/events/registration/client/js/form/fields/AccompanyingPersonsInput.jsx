@@ -12,7 +12,13 @@ import {useFormState} from 'react-final-form';
 import {useSelector} from 'react-redux';
 import {Button, Form, Label} from 'semantic-ui-react';
 
-import {FinalCheckbox, FinalField, FinalInput, validators as v} from 'indico/react/forms';
+import {
+  FinalCheckbox,
+  FinalDropdown,
+  FinalField,
+  FinalInput,
+  validators as v,
+} from 'indico/react/forms';
 import {FinalModalForm} from 'indico/react/forms/final-form';
 import {Translate} from 'indico/react/i18n';
 
@@ -21,6 +27,31 @@ import {getCurrency, getItems} from '../selectors';
 import {PlacesLeft} from './PlacesLeftLabel';
 
 import '../../../styles/regform.module.scss';
+
+const TShirtChoices = [
+  'men: S',
+  'men: M',
+  'men: L',
+  'men: XL',
+  'men: 2XL',
+  'men: 3XL',
+  'men: 4XL',
+  'men: 5XL',
+  'ladies: S',
+  'ladies: M',
+  'ladies: L',
+  'ladies: XL',
+  'ladies: 2XL',
+  'ladies: 3XL',
+];
+
+const Pronouns = [
+  '(do not display)',
+  'he/him',
+  'she/her',
+  'they/them',
+  'Other (specify in the "comments" section)',
+];
 
 function AccompanyingPersonModal({value, header, onSubmit, onClose}) {
   return (
@@ -33,6 +64,27 @@ function AccompanyingPersonModal({value, header, onSubmit, onClose}) {
     >
       <FinalInput name="firstName" label={Translate.string('First Name')} required autoFocus />
       <FinalInput name="lastName" label={Translate.string('Last Name')} required />
+      <FinalDropdown
+        name="t_shirt"
+        label={Translate.string('T-shirt')}
+        options={TShirtChoices.map(tshirt => ({
+          key: tshirt,
+          value: tshirt,
+          text: Translate.string(tshirt),
+        }))}
+        selection
+      />
+      <FinalDropdown
+        name="pronouns"
+        label={Translate.string('Pronouns (optional, for nametags)')}
+        options={Pronouns.map(pronoun => ({
+          key: pronoun,
+          value: pronoun,
+          text: Translate.string(pronoun),
+        }))}
+        selection
+      />
+      <FinalInput name="comments" label={Translate.string('Comments')} />
     </FinalModalForm>
   );
 }
@@ -42,6 +94,9 @@ AccompanyingPersonModal.propTypes = {
     id: PropTypes.string.isRequired,
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,
+    t_shirt: PropTypes.string,
+    pronouns: PropTypes.string,
+    comments: PropTypes.string,
   }),
   header: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
@@ -53,6 +108,9 @@ AccompanyingPersonModal.defaultProps = {
     id: null,
     firstName: null,
     lastName: null,
+    t_shirt: null,
+    pronouns: null,
+    comments: null,
   },
 };
 
@@ -151,7 +209,8 @@ function AccompanyingPersonsComponent({
         {value.map(person => (
           <li key={person.id}>
             <span>
-              {person.firstName} {person.lastName}
+              {person.firstName} {person.lastName}: {person.t_shirt} {person.pronouns}
+              {person.comments}
             </span>
             <div styleName="actions">
               <a
@@ -213,6 +272,9 @@ AccompanyingPersonsComponent.propTypes = {
       id: PropTypes.string.isRequired,
       firstName: PropTypes.string.isRequired,
       lastName: PropTypes.string.isRequired,
+      t_shirt: PropTypes.string,
+      pronouns: PropTypes.string,
+      comments: PropTypes.string,
     })
   ).isRequired,
   disabled: PropTypes.bool,
