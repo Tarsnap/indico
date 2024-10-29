@@ -2,6 +2,17 @@ Changelog
 =========
 
 
+*Unreleased*
+
+Security fixes
+^^^^^^^^^^^^^^
+
+- Fix an open redirect during account creation. Exploitation requires initiating
+  account creation with a maliciously crafted link, and then finalizing the signup
+  process, after which the user would be redirected to an external page instead of
+  staying on Indico (thanks :user:`GauthierGitHub`)
+
+
 Version 3.2.9
 -------------
 
