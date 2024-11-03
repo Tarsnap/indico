@@ -2,8 +2,9 @@
 
 # Backup script - version 1.0
 
-DATE1=`date`
-DATE2=`date -j -f "%a %b %d %T %Z %Y" "$DATE1" "+%s"`
+# Get the date as epoch seconds
+DATE2=$(date "+%s")
+
 # Create sql file for indico database
 
 pg_dump indico > /root/$DATE2-indico.sql
