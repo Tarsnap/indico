@@ -37,6 +37,17 @@ const Pronouns = [
   'Other (please specify in the "comments" box)',
 ];
 
+const DietaryChoices = [
+  'Meat',
+  'Vegetarian',
+  'Vegan',
+  'Gluten-free',
+  'Alcohol-free food and beverages',
+  'Sugar-free beverages',
+  'Caffeine-free beverages',
+  'Other (please specify in the "comments" box)',
+];
+
 const TShirtChoices = [
   'Small',
   'Medium',
@@ -76,6 +87,17 @@ function AccompanyingPersonModal({value, header, onSubmit, onClose}) {
         selection
       />
       <FinalDropdown
+        name="dietary"
+        label={Translate.string('Dietary Preferences')}
+        options={DietaryChoices.map(dietary => ({
+          key: dietary,
+          value: dietary,
+          text: Translate.string(dietary),
+        }))}
+        selection
+        multiple
+      />
+      <FinalDropdown
         name="tshirt"
         label={Translate.string('T-shirt')}
         options={TShirtChoices.map(tshirt => ({
@@ -96,6 +118,7 @@ AccompanyingPersonModal.propTypes = {
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,
     pronouns: PropTypes.string,
+    dietary: PropTypes.array,
     tshirt: PropTypes.string,
     comments: PropTypes.string,
   }),
@@ -110,6 +133,7 @@ AccompanyingPersonModal.defaultProps = {
     firstName: null,
     lastName: null,
     pronouns: null,
+    dietary: null,
     tshirt: null,
     comments: null,
   },
@@ -214,6 +238,7 @@ function AccompanyingPersonsComponent({
             </span>
             <span style={{marginLeft: '2em'}}>
               {person.pronouns !== undefined && `(${person.pronouns}) | `}
+              {person.dietary !== undefined && `${person.dietary.join(', ')} | `}
               {person.tshirt !== undefined && `${person.tshirt} | `}
               {person.comments}
             </span>
@@ -278,6 +303,7 @@ AccompanyingPersonsComponent.propTypes = {
       firstName: PropTypes.string.isRequired,
       lastName: PropTypes.string.isRequired,
       pronouns: PropTypes.string,
+      dietary: PropTypes.array,
       tshirt: PropTypes.string,
       comments: PropTypes.string,
     })
