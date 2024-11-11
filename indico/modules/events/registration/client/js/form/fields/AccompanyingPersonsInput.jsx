@@ -65,6 +65,8 @@ const TShirtChoices = [
   'Fitted 3XL',
 ];
 
+const closingPartyCost = 64;
+
 function AccompanyingPersonModal({value, header, onSubmit, onClose}) {
   return (
     <FinalModalForm
@@ -107,6 +109,10 @@ function AccompanyingPersonModal({value, header, onSubmit, onClose}) {
         }))}
         selection
       />
+      <FinalCheckbox
+        name="closingParty"
+        label={`${Translate.string('Ticket for the closing party')} ($${closingPartyCost})`}
+      />
       <FinalTextArea name="comments" label={Translate.string('Comments')} />
     </FinalModalForm>
   );
@@ -120,6 +126,7 @@ AccompanyingPersonModal.propTypes = {
     pronouns: PropTypes.string,
     dietary: PropTypes.array,
     tshirt: PropTypes.string,
+    closingParty: PropTypes.bool,
     comments: PropTypes.string,
   }),
   header: PropTypes.string.isRequired,
@@ -135,6 +142,7 @@ AccompanyingPersonModal.defaultProps = {
     pronouns: null,
     dietary: null,
     tshirt: null,
+    closingParty: null,
     comments: null,
   },
 };
@@ -174,6 +182,16 @@ function calculatePlaces(availablePlaces, maxPersons, personsInCurrentField, ite
   }
 }
 
+function numParties(value) {
+  let count = 0;
+  for (let i = 0; i < value.length; i++) {
+    if (value[i].closingParty) {
+      count++;
+    }
+  }
+  return count;
+}
+
 function AccompanyingPersonsComponent({
   value,
   disabled,
@@ -184,7 +202,7 @@ function AccompanyingPersonsComponent({
 }) {
   const [operation, setOperation] = useState({type: null, person: null});
   const currency = useSelector(getCurrency);
-  const totalPrice = (value.length * price).toFixed(2);
+  const totalPrice = (value.length * price + numParties(value) * closingPartyCost).toFixed(2);
   const items = useSelector(getItems);
   const formState = useFormState();
 
@@ -240,6 +258,7 @@ function AccompanyingPersonsComponent({
               {person.pronouns !== undefined && `(${person.pronouns}) | `}
               {person.dietary !== undefined && `${person.dietary.join(', ')} | `}
               {person.tshirt !== undefined && `${person.tshirt} | `}
+              {person.closingParty !== undefined && `${person.closingParty} | `}
               {person.comments}
             </span>
             <div styleName="actions">
@@ -305,6 +324,7 @@ AccompanyingPersonsComponent.propTypes = {
       pronouns: PropTypes.string,
       dietary: PropTypes.array,
       tshirt: PropTypes.string,
+      closingParty: PropTypes.bool,
       comments: PropTypes.string,
     })
   ).isRequired,
