@@ -19,6 +19,8 @@ class AccompanyingPersonSchema(mm.Schema):
     id = fields.UUID()
     firstName = fields.String(required=True, validate=not_empty)  # noqa: N815
     lastName = fields.String(required=True, validate=not_empty)  # noqa: N815
+    pronouns = fields.String(required=False)
+    tshirt = fields.String(required=False)
     comments = fields.String(required=False)
 
     @pre_load
@@ -80,8 +82,10 @@ class AccompanyingPersonsField(RegistrationFormBillableField):
             first_name = entry['firstName']
             last_name = entry['lastName']
             # These keys are not required, so we need to specify default values
+            pronouns = entry.get('pronouns', '')
+            tshirt = entry.get('tshirt', '')
             comments = entry.get('comments', '')
-            return f'{first_name} | {last_name} | {comments}'
+            return f'{first_name} | {last_name} | {pronouns} | {tshirt} | {comments}'
 
         reg_data = registration_data.data
         if not reg_data:
