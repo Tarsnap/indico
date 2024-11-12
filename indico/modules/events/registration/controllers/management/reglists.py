@@ -47,7 +47,7 @@ from indico.modules.events.registration.util import (create_registration, genera
                                                      get_flat_section_submission_data, get_initial_form_values,
                                                      get_ticket_attachments, get_title_uuid, get_user_data,
                                                      import_registrations_from_csv, make_registration_schema)
-from indico.modules.events.registration.views import WPManageRegistration
+from indico.modules.events.registration.views import WPDisplayRegistrationFormConference, WPManageRegistration
 from indico.modules.events.util import ZipGeneratorMixin
 from indico.modules.logs import LogKind
 from indico.util.fs import secure_filename
@@ -193,6 +193,20 @@ def _render_registration_details(registration):
 
     return tpl.render_registration_details(registration=registration, payment_enabled=event.has_feature('payment'),
                                            assigned_tags=assigned_tags, all_tags=all_tags)
+
+
+class RHRegistrationsListAll(RHManageRegFormsBase):
+    """List of all non-deleted registrations (for managers)."""
+
+    def _process(self):
+        table = _get_merged_registrations(self.event)
+
+        return WPDisplayRegistrationFormConference.render_template(
+            'display/registration_list_all.html',
+            self.event,
+            table=table,
+            num_registrations=table['num_registrations']
+        )
 
 
 class RHRegistrationsListAllCSV(RHManageRegFormsBase):
